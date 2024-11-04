@@ -37,11 +37,11 @@ const App: React.FC = () => {
 
       <div className="flex flex-col space-y-4 mb-8">
         <div>
-          <h2 className="font-semibold text-xl">Total Income: ${totalIncome.toFixed(2)}</h2>
-          <h2 className="font-semibold text-xl">Total Expenses: ${totalExpenses.toFixed(2)}</h2>
-          <h2 className="font-semibold text-xl">VAT Payable from Income: ${VATPayable.toFixed(2)}</h2>
-          <h2 className="font-semibold text-xl">VAT Deductible from Expenses: ${totalVATDeductible.toFixed(2)}</h2>
-          <h2 className="font-semibold text-xl">Net Income: ${netIncome.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">Total Income: €{totalIncome.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">Total Expenses: €{totalExpenses.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">VAT Payable from Income: €{VATPayable.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">VAT Deductible from Expenses: €{totalVATDeductible.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">Net Income: €{netIncome.toFixed(2)}</h2>
         </div>
       </div>
 

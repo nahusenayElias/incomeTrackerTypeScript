@@ -36,4 +36,5 @@ export interface Income {
         pension: 0,
         insurance: 0,
         miscellaneous: 14,
+        commission: 0,
       };
