@@ -30,10 +30,12 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAdd }) => {
       <select value={category}
       onChange={(e) => setCategory(e.target.value as ExpenseCategory)} className="border p-2">
         <option value="fuel">Fuel</option>
+        <option value="CarWash">CarWash</option>
         <option value="maintenance">Maintenance</option>
         <option value="telephone">Telephone</option>
         <option value="roadTax">Road Tax</option>
         <option value="pension">Pension</option>
+        <option value="meal">Meal</option>
         <option value="insurance">Insurance</option>
         <option value="miscellaneous">Miscellaneous</option>
         <option value="commission">Commission</option>
