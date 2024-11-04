@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { Income, Expense } from "./types";
-import ExpenseForm from "./components/ExpenseForm";
 import IncomeForm from "./components/IncomeForm";
+import ExpenseForm from "./components/ExpenseForm";
 
-const VAT_ON_INCOME = 10; // VAT rate on income
+const VAT_RATE = 10; // Consistent VAT rate for both income and deductible VAT
 
 const App: React.FC = () => {
   const [income, setIncome] = useState<Income[]>([]);
@@ -14,20 +14,18 @@ const App: React.FC = () => {
   // Calculate total income
   const totalIncome = income.reduce((total, inc) => total + inc.amount, 0);
 
-  // Calculate VAT payable from income
-  const VATPayable = totalIncome * (VAT_ON_INCOME / 100);
+  // Calculate VAT payable on income
+  const VATPayable = totalIncome * (VAT_RATE / 100);
 
-  // Calculate total expenses and deductible VAT
+  // Calculate total expenses
   const totalExpenses = expenses.reduce((total, exp) => total + exp.amount, 0);
-  const totalVATDeductible = expenses.reduce(
-    (total, exp) => total + (exp.amount * exp.VATRate) / (100 + exp.VATRate),
-    0
-  );
+
+  // Calculate deductible VAT at 10% of total expenses
+  const totalVATDeductible = totalExpenses * (VAT_RATE / 100);
 
   // Calculate net income
   const netIncome = totalIncome - totalExpenses - VATPayable + totalVATDeductible;
 
-  // Handlers for adding income and expenses
   const handleAddIncome = (newIncome: Income) => setIncome([...income, newIncome]);
   const handleAddExpense = (newExpense: Expense) => setExpenses([...expenses, newExpense]);
 
@@ -37,11 +35,11 @@ const App: React.FC = () => {
 
       <div className="flex flex-col space-y-4 mb-8">
         <div>
-          <h2 className="font-semibold text-xl">Total Income: €{totalIncome.toFixed(2)}</h2>
-          <h2 className="font-semibold text-xl">Total Expenses: €{totalExpenses.toFixed(2)}</h2>
-          <h2 className="font-semibold text-xl">VAT Payable from Income: €{VATPayable.toFixed(2)}</h2>
-          <h2 className="font-semibold text-xl">VAT Deductible from Expenses: €{totalVATDeductible.toFixed(2)}</h2>
-          <h2 className="font-semibold text-xl">Net Income: €{netIncome.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">Total Income: ${totalIncome.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">Total Expenses: ${totalExpenses.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">VAT Payable from Income: ${VATPayable.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">VAT Deductible from Expenses: ${totalVATDeductible.toFixed(2)}</h2>
+          <h2 className="font-semibold text-xl">Net Income: ${netIncome.toFixed(2)}</h2>
         </div>
       </div>
 
