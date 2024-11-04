@@ -13,6 +13,8 @@ export interface Income {
       | "fuel"
       | "maintenance"
       | "meal"
+      | "meal"
+      | "CarWash"
       | "telephone"
       | "miscellaneous"
       | "roadTax"
@@ -34,6 +36,8 @@ export interface Income {
         telephone: 0,
         roadTax: 0,
         pension: 0,
+        CarWash: 25.5,
+        meal: 14,
         insurance: 0,
         miscellaneous: 14,
         commission: 0,
