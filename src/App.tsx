@@ -3,6 +3,7 @@ import { Income, Expense } from "./types";
 import IncomeForm from "./components/IncomeForm";
 import ExpenseForm from "./components/ExpenseForm";
 import { vatCalc } from "./components/ExpenseForm";
+import logo from "./assets/2.png";
 
 const VAT_RATE = 14; // Adjust this based on your income VAT rate
 
@@ -33,11 +34,18 @@ const App: React.FC = () => {
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+    <div className="max-w-6xl mx-auto">
+      {/* Logo & Header Section */}
+      <div className="flex items-center justify-center gap-4 mb-8">
+        <img
+          src={logo}
+          alt="Company Logo"
+          className="h-24 w-24 rounded-lg bg-white p-1 shadow-sm"
+        />
+        <h1 className="text-3xl font-bold text-gray-800">
           Income and Expense Tracker
         </h1>
-
+      </div>
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
@@ -114,7 +122,7 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+      </div>
   );
 };
 
