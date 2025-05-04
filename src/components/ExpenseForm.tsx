@@ -22,8 +22,16 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAdd }) => {
     e.preventDefault();
 
     const defaultRate = VAT_RATES[category];
-    const finalVATRate =
-      category === "telephone" ? parseFloat(customVAT || "0") : defaultRate;
+    const totalAmount = parseFloat(amount);
+let finalVATRate = defaultRate;
+
+if (category === "telephone") {
+  const vatEuro = parseFloat(customVAT || "0");
+  if (totalAmount > 0 && !isNaN(vatEuro)) {
+    finalVATRate = (vatEuro / totalAmount) * 100;
+  }
+}
+
 
     onAdd({
       id: uuidv4(),
