@@ -6,20 +6,17 @@ export interface Income {
   }
 
   export type ExpenseCategory =
+  | "fuel"
+  | "maintenance"
+  | "meal"
+  | "CarWash"
+  | "telephone"
+  | "miscellaneous"
+  | "roadTax"
+  | "insurance"
+  | "pension"
+  | "commission";
 
-      | "income"
-      | "commission"
-      | "VAT"
-      | "fuel"
-      | "maintenance"
-      | "meal"
-      | "meal"
-      | "CarWash"
-      | "telephone"
-      | "miscellaneous"
-      | "roadTax"
-      | "insurance"
-      | "pension";
 
       export interface Expense {
         id: string;
@@ -39,6 +36,6 @@ export interface Income {
         CarWash: 25.5,
         meal: 14,
         insurance: 0,
-        miscellaneous: 14,
+        miscellaneous: 25.5,
         commission: 0,
       };
