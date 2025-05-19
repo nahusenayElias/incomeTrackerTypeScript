@@ -10,6 +10,7 @@ const VAT_RATE = 14;
 const App: React.FC = () => {
   const [income, setIncome] = useState<Income[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [editingIncome, setEditingIncome] = useState<Income | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
   // Calculate totals
@@ -24,7 +25,21 @@ const App: React.FC = () => {
   const netIncome = totalIncome - totalExpenses - VATPayable + totalVATDeductible;
 
   // Income handlers
-  const handleAddIncome = (newIncome: Income) => setIncome([...income, newIncome]);
+  const handleAddIncome = (newIncome: Income) => {
+    setIncome([...income, newIncome]);
+    setEditingIncome(null);
+  };
+
+  const handleEditIncome = (updatedIncome: Income) => {
+    setIncome(income.map(inc =>
+      inc.id === updatedIncome.id ? updatedIncome : inc
+    ));
+    setEditingIncome(null);
+  };
+
+  const handleDeleteIncome = (incomeId: string) => {
+    setIncome(income.filter(inc => inc.id !== incomeId));
+  };
 
   // Expense handlers
   const handleAddExpense = (newExpense: Expense) => {
@@ -60,14 +75,43 @@ const App: React.FC = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {/* ... Keep the same stats grid as before ... */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">Total Income</h3>
+            <p className="text-2xl font-semibold text-green-600">€{totalIncome.toFixed(2)}</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">Total Expenses</h3>
+            <p className="text-2xl font-semibold text-red-600">€{totalExpenses.toFixed(2)}</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">VAT Payable</h3>
+            <p className="text-2xl font-semibold text-purple-600">€{VATPayable.toFixed(2)}</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">VAT Deductible</h3>
+            <p className="text-2xl font-semibold text-blue-600">€{totalVATDeductible.toFixed(2)}</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 col-span-full lg:col-span-1">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">Net Income</h3>
+            <p className="text-2xl font-semibold text-gray-900">€{netIncome.toFixed(2)}</p>
+          </div>
         </div>
 
         {/* Forms Section */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">Add Income</h2>
-            <IncomeForm onAdd={handleAddIncome} />
+            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+              {editingIncome ? "Edit Income" : "Add Income"}
+            </h2>
+            <IncomeForm
+              onAdd={handleAddIncome}
+              onEdit={handleEditIncome}
+              existingIncome={editingIncome}
+            />
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
@@ -82,9 +126,58 @@ const App: React.FC = () => {
           </div>
         </div>
 
+        {/* Income Table */}
+        {income.length > 0 && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Income Records</h2>
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {['Date', 'Source', 'Amount (€)', 'Actions'].map((header) => (
+                      <th key={header} className="px-4 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                        {header}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {income.map((inc) => (
+                    <tr key={inc.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 text-sm text-gray-700">
+                        {inc.date.toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-700 capitalize">
+                        {inc.source}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-700 font-medium">
+                        {inc.amount.toFixed(2)}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-700 space-x-2">
+                        <button
+                          onClick={() => setEditingIncome(inc)}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteIncome(inc.id)}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Expenses Table */}
         {expenses.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-semibold mb-4 text-gray-700">Expense Receipts</h2>
               <table className="w-full">
