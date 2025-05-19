@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Expense, ExpenseCategory, VAT_RATES } from "../types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -10,40 +10,63 @@ export function vatCalc(totalPrice: number, vatRate: number) {
 
 interface ExpenseFormProps {
   onAdd: (expense: Expense) => void;
+  onEdit?: (expense: Expense) => void;
+  existingExpense?: Expense | null;
 }
 
-const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAdd }) => {
+const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAdd, onEdit, existingExpense }) => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState<ExpenseCategory>("fuel");
   const [customVAT, setCustomVAT] = useState("");
-  const [date, setDate] = useState<string>(new Date().toISOString().split("T")[0]); // default to current date
+  const [date, setDate] = useState<string>(new Date().toISOString().split("T")[0]);
+
+  useEffect(() => {
+    if (existingExpense) {
+      setAmount(existingExpense.amount.toString());
+      setCategory(existingExpense.category);
+      setDate(existingExpense.date.toISOString().split("T")[0]);
+
+      if (existingExpense.category === "telephone") {
+        const vatEuro = (existingExpense.amount * existingExpense.VATRate) / 100;
+        setCustomVAT(vatEuro.toFixed(2));
+      }
+    }
+  }, [existingExpense]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const defaultRate = VAT_RATES[category];
     const totalAmount = parseFloat(amount);
-let finalVATRate = defaultRate;
+    let finalVATRate = defaultRate;
 
-if (category === "telephone") {
-  const vatEuro = parseFloat(customVAT || "0");
-  if (totalAmount > 0 && !isNaN(vatEuro)) {
-    finalVATRate = (vatEuro / totalAmount) * 100;
-  }
-}
+    if (category === "telephone") {
+      const vatEuro = parseFloat(customVAT || "0");
+      if (totalAmount > 0 && !isNaN(vatEuro)) {
+        finalVATRate = (vatEuro / totalAmount) * 100;
+      }
+    }
 
-
-    onAdd({
-      id: uuidv4(),
+    const expenseData = {
+      id: existingExpense?.id || uuidv4(),
       category,
-      amount: parseFloat(amount),
+      amount: totalAmount,
       VATRate: finalVATRate,
-      date: new Date(date), // use the selected date
-    });
+      date: new Date(date),
+    };
 
-    setAmount("");
-    setCustomVAT("");
-    setDate(new Date().toISOString().split("T")[0]); // reset date to current date after submission
+    if (existingExpense && onEdit) {
+      onEdit(expenseData);
+    } else {
+      onAdd(expenseData);
+    }
+
+    if (!existingExpense) {
+      setAmount("");
+      setCategory("fuel");
+      setCustomVAT("");
+      setDate(new Date().toISOString().split("T")[0]);
+    }
   };
 
   const isCustomVAT = category === "telephone";
@@ -74,6 +97,7 @@ if (category === "telephone") {
         placeholder="Amount (€)"
         className="border p-2"
         required
+        step="0.01"
       />
 
       {isCustomVAT && (
@@ -81,13 +105,13 @@ if (category === "telephone") {
           type="number"
           value={customVAT}
           onChange={(e) => setCustomVAT(e.target.value)}
-          placeholder="Custom VAT (%)"
+          placeholder="VAT Amount (€)"
           className="border p-2"
           required
+          step="0.01"
         />
       )}
 
-      {/* Date Input */}
       <input
         type="date"
         value={date}
@@ -96,7 +120,7 @@ if (category === "telephone") {
       />
 
       <button type="submit" className="bg-green-500 text-white px-4 py-2">
-        Add Expense
+        {existingExpense ? "Update Expense" : "Add Expense"}
       </button>
     </form>
   );
