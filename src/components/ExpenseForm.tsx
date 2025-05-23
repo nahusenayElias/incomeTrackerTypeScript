@@ -84,6 +84,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAdd, onEdit, existingExpens
         <option value="telephone">Telephone</option>
         <option value="roadTax">Road Tax</option>
         <option value="pension">Pension</option>
+        <option value="parking">Parking</option>
         <option value="meal">Meal</option>
         <option value="insurance">Insurance</option>
         <option value="miscellaneous">Miscellaneous</option>
