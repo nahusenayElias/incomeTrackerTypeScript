@@ -15,6 +15,7 @@ export interface Income {
   | "roadTax"
   | "insurance"
   | "pension"
+  | "parking"
   | "commission";
 
 
@@ -33,6 +34,7 @@ export interface Income {
         telephone: 0,
         roadTax: 0,
         pension: 0,
+        parking: 25.5,
         CarWash: 25.5,
         meal: 14,
         insurance: 0,
